@@ -1,8 +1,22 @@
+const API_ENDPOINT = "http://localhost:8080/api/";
+
 document.addEventListener("DOMContentLoaded", () => {
   const id = window.location.pathname.split("/").pop();
+  let ownerData;
+  let petData;
+  let userId;
 
   if (id) {
-    console.log(`Información de la mascota con ID: ${id}`);
+    fetch(`${API_ENDPOINT}pets/pet/info/user/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        ownerData = data.userInfo;
+        petData = data.pet;
+        userId = data.pet.userId;
+      })
+      .catch(() => {
+        console.log("No se pudo obtener la información de la mascota.");
+      });
   } else {
     console.log("No se encontró el ID.");
   }
@@ -24,21 +38,38 @@ document.addEventListener("DOMContentLoaded", () => {
           // Limpiar contenido anterior
           content.innerHTML = "";
 
+          // Elementos para el dueño
           const title = document.createElement("h1");
           title.textContent = "Gracias por compartir tu ubicación";
-
-          const ownerInfo = `
-                                  <h2 style="color : #54787D;">Información del dueño</h2>
-                                  <p style="color: #615145;">Rodrigo Flores</p>
-                                  <p style="color: #615145;">961 233 4937</p>
-                                  <p style="color: #615145;"><a href='mailto:923252@ids.upchiapas.edu.mx'>923252@ids.upchiapas.edu.mx</a></p>
-                              `;
+          const ownerInfoDiv = document.createElement("div");
+          const h2Dueño = document.createElement("h2");
+          h2Dueño.textContent = "Información del dueño";
+          h2Dueño.style.color = "#54787D";
+          ownerData.forEach((element) => {
+            const infoElement = document.createElement("h2");
+            infoElement.style.color = "#54787D";
+            infoElement.textContent = element.field;
+            const pElement = document.createElement("p");
+            pElement.style.color = "#615145";
+            pElement.textContent = element.value;
+            ownerInfoDiv.appendChild(infoElement);
+            ownerInfoDiv.appendChild(pElement);
+          });
 
           const petInfo = `
                                   <h2 style="color : #54787D;">Información de la mascota</h2>
-                                  <p style="color: #615145;">Marx (Macho)</p>
-                                  <p style="color: #615145;">8 años</p>
-                                  <p style="color: #615145;">Border Collie</p>
+                                  <p style="color: #615145;">${petData.name} (${
+            petData.petProfile.sex == "M" ? "Macho" : "Hembra"
+          })</p>
+                                  <p style="color: #615145;">${
+                                    petData.petProfile.age
+                                  } años</p>
+                                  <p style="color: #615145;">${
+                                    petData.petProfile.race
+                                  }</p>
+                                  <p style="color: #615145;">${
+                                    petData.petProfile.color
+                                  }</p>
                               `;
 
           const locationTitle = document.createElement("h2");
@@ -48,7 +79,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const mapContainer = document.createElement("div");
           mapContainer.id = "map";
           content.appendChild(title);
-          content.innerHTML += ownerInfo + petInfo;
+          content.appendChild(ownerInfoDiv);
+          content.innerHTML += petInfo;
           content.appendChild(locationTitle);
           content.appendChild(mapContainer);
 
@@ -59,6 +91,23 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((response) => response.json())
             .then((data) => {
               const address = data.display_name || "Dirección no disponible";
+
+              fetch(`${API_ENDPOINT}notifications`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  userId: userId,
+                  petId: parseInt(id),
+                  date: new Date(),
+                  location: address,
+                }),
+              }).then(() => {
+                console.log("Notificación enviada.");
+              }).catch(() => {
+                console.error("No se pudo enviar la notificación.");
+              })
 
               // Crear el mapa con la ubicación
               const map = L.map("map").setView([latitude, longitude], 15);
