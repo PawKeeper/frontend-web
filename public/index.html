@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PawKeeper</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <link rel="stylesheet" href="./src/styles/index.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="./src/scripts/index.js" defer></script>
+  </head>
+  <body>
+    <main class="container">
+      <img src="./src/assets/logo.png" alt="logo" />
+      <div id="intro-view" class="view">
+        <h1>Gracias por escanear el código QR</h1>
+        <p>
+          Has escaneado un QR de PawKeeper y estás frente a un perro perdido.
+          Permite el acceso a tu ubicación para compartirla con su dueño. Luego,
+          podrás ver su contacto para brindarle más información si deseas
+          ayudar.
+        </p>
+        <button class="button allow">Conceder acceso a la ubicación</button>
+        <button class="button deny">Negar permiso</button>
+      </div>
+
+      <div id="content" class="view" style="display: none"></div>
+
+      <div class="footer">
+        <img src="./src/assets/paw.png" alt="paw" />
+        <img src="./src/assets/paw.png" alt="paw" />
+      </div>
+    </main>
+  </body>
+</html>
