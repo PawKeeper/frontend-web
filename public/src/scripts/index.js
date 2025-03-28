@@ -103,11 +103,13 @@ document.addEventListener("DOMContentLoaded", () => {
                   date: new Date(),
                   location: address,
                 }),
-              }).then(() => {
-                console.log("Notificación enviada.");
-              }).catch(() => {
-                console.error("No se pudo enviar la notificación.");
               })
+                .then(() => {
+                  console.log("Notificación enviada.");
+                })
+                .catch(() => {
+                  console.error("No se pudo enviar la notificación.");
+                });
 
               // Crear el mapa con la ubicación
               const map = L.map("map").setView([latitude, longitude], 15);
