@@ -1,4 +1,4 @@
-const API_ENDPOINT = "http://54.145.242.237:3000/api/";
+const API_ENDPOINT = "https://apipawkeeper.fernando-e-flores.me/api/";
 
 document.addEventListener("DOMContentLoaded", () => {
   const id = window.location.pathname.split("/").pop();
